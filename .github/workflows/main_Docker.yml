@@ -1,40 +1,24 @@
-name: Fullstack Docker Build
+name: Build with Docker Compose
 
 on:
   push:
     branches:
-      - main
+      - main # Trigger on pushes to the main branch
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
-      - name: 🧾 Checkout Main Branch
+      - name: Checkout code
         uses: actions/checkout@v3
-        with:
-          ref: main
-          fetch-depth: 0  # Required to fetch other branches
 
-      - name: 📥 Merge Frontend Branch into Working Tree
-        run: |
-          git fetch origin Frontend
-          git checkout origin/Frontend -- frontend
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
-      - name: 📥 Merge Backend Branch into Working Tree
-        run: |
-          git fetch origin backend
-          git checkout origin/backend -- backend
-
-      - name: 📂 Verify Folder Structure
-        run: |
-          ls -R
-
-      - name: 🐳 Set Up Docker Compose
+      - name: Install Docker Compose
         run: |
           sudo apt-get update
           sudo apt-get install -y docker-compose
 
-      - name: 🔨 Build Docker Images with Docker Compose
-        run: |
-          docker-compose -f docker-compose.yml build
+      - name: Build and run services
+        run: docker-compose -f docker-compose.yml build

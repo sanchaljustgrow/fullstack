@@ -22,3 +22,10 @@ jobs:
 
       - name: Build and run services
         run: docker-compose -f docker-compose.yml build
+      - name: Log in to DockerHub
+        uses: docker/login-action@v2
+        with:
+          username: sanchalkhedkar
+          password: dckr_pat_yC7BqB9FPf8d_ZT9M_A4dktjrWo
+      - name : push image on DockerHub
+        run: docker-compose -f docker-compose.yml push     

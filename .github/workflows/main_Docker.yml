@@ -21,9 +21,9 @@ jobs:
         with:
           registry: docker.io # Or your registry (e.g., ghcr.io, ECR)
           username: sanchalkhedkar  # Use secrets for credentials
-          password: dckr_pat_pn0g2w2B6tDE3BXWTsnmGhmEhbc
+          password: dckr_pat_yC7BqB9FPf8d_ZT9M_A4dktjrWo
 
       - name: Build Docker Image
         run: |
-          docker build -t sanchalkhedkar/main:latest .
+          docker build -t sanchalkhedkar/compose:latest .
 

@@ -1,4 +1,4 @@
-name: Build Docker Image
+name: Fullstack Docker Build
 
 on:
   push:
@@ -10,29 +10,31 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Checkout main to get docker-compose.yml and Dockerfile
-      - name: 📥 Checkout Main Branch
+      - name: 🧾 Checkout Main Branch
         uses: actions/checkout@v3
         with:
           ref: main
+          fetch-depth: 0  # Required to fetch other branches
 
-      # Fetch Frontend branch into frontend/
-      - name: 📥 Merge Frontend Branch
+      - name: 📥 Merge Frontend Branch into Working Tree
         run: |
           git fetch origin Frontend
-          git checkout Frontend -- frontend
+          git checkout origin/Frontend -- frontend
 
-      # Fetch Backend branch into backend/
-      - name: 📥 Merge Backend Branch
+      - name: 📥 Merge Backend Branch into Working Tree
         run: |
           git fetch origin backend
-          git checkout backend -- backend
+          git checkout origin/backend -- backend
 
-      # Debug folder structure
-      - name: 📁 Show Directory
-        run: ls -R
+      - name: 📂 Verify Folder Structure
+        run: |
+          ls -R
 
-      # Build Docker image
-      - name: 🐳 Build Image
-        run: docker build -t your-image-name .
+      - name: 🐳 Set Up Docker Compose
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y docker-compose
 
+      - name: 🔨 Build Docker Images with Docker Compose
+        run: |
+          docker-compose -f docker-compose.yml build

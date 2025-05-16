@@ -27,22 +27,9 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y docker-compose
 
-      # Step 4: Checkout Frontend Branch
-      - name: 🧑‍💻 Checkout Frontend Branch
-        run: |
-          git fetch --all
-          git checkout Frontend  # Corrected branch name
-          ls -la Dockerfile  # Debug: List files in frontend directory
-
-      # Step 5: Checkout Backend Branch
-      - name: 🧑‍💻 Checkout Backend Branch
-        run: |
-          git fetch --all
-          git checkout backend  # Corrected branch name
-          ls -la Dockerfile   # Debug: List files in backend directory
-
-      # Step 6: Build the services with Docker Compose
+      # Step 4: Build the services with Docker Compose
       - name: 🐋 Build Frontend & Backend with Docker Compose
         run: |
-          
+          # Change the current directory to the root of the repository.
+          cd /github/workspace 
           docker-compose -f docker-compose.yml build

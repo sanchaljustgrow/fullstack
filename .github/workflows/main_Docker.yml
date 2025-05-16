@@ -45,4 +45,4 @@ jobs:
       - name: 🐋 Build Frontend & Backend with Docker Compose
         run: |
           
-          docker-compose -f docker_compose.yml build
+          docker-compose -f docker-compose.yml build

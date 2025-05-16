@@ -1,4 +1,4 @@
-name: Build Frontend & Backend
+name: Build Frontend and Backend with Docker Compose
 
 on:
   push:
@@ -13,17 +13,20 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Code
+      - name: 📥 Checkout code
         uses: actions/checkout@v3
 
-      - name: Set up Docker Buildx
+      - name: 🐳 Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Install Docker Compose
+      - name: 🔧 Install Docker Compose
         run: |
           sudo apt-get update
           sudo apt-get install -y docker-compose
 
-      - name: Build Services with Docker Compose
-        run: |
-          docker-compose -f docker-compose.yml build
+      - name: 📁 List project directory (debug)
+        run: ls -R
+
+      - name: 🔨 Build Frontend & Backend with Docker Compose
+        run: docker-compose -f fullstack/docker_compose.yml build
+

@@ -3,7 +3,7 @@ version: '3.8'
 services:
   frontend: # Changed to lowercase
     build:
-      context: ./Frontend
+      context: ./
       dockerfile: Dockerfile # Specify the Dockerfile
     ports:
       - "4200:80"
@@ -12,7 +12,7 @@ services:
     restart: unless-stopped # Add a restart policy
   backend:
     build:
-      context: ./backend
+      context: ./
       dockerfile: Dockerfile # Specify the Dockerfile
     ports:
       - "8080:8080"

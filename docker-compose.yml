@@ -1,17 +1,19 @@
-
 version: '3.8'
 
 services:
   Frontend:
     build:
-      context: ./Frontend
+      context: ./
+      dockerfile: Dockerfile # Specify the Dockerfile
     ports:
       - "4200:80"
     depends_on:
       - backend
-
+    restart: unless-stopped # Add a restart policy
   backend:
     build:
-      context: ./backend
+      context: ./
+      dockerfile: Dockerfile # Specify the Dockerfile
     ports:
       - "8080:8080"
+    restart: unless-stopped # Add a restart policy

@@ -4,6 +4,7 @@ services:
   frontend:
     build:
       context: ./frontend
+    image: sanchalkhedkar/frontend   # REQUIRED to push
     ports:
       - "4200:80"
     depends_on:
@@ -12,5 +13,6 @@ services:
   backend:
     build:
       context: ./backend
+    image: sanchalkhedkar/backend    # REQUIRED to push
     ports:
       - "8080:8080"

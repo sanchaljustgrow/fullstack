@@ -31,5 +31,5 @@ jobs:
       - name: 🐋 Build Frontend & Backend with Docker Compose
         run: |
           # Change the current directory to the root of the repository.
-          cd /github/workspace 
+          cd ./
           docker-compose -f docker-compose.yml build

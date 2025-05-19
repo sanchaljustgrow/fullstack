@@ -29,5 +29,6 @@ EXPOSE 80
 # --- Entrypoint Script ---
 # Create a script to start either the backend or the frontend
 # This script will be used as the ENTRYPOINT
-COPY --chmod=755 ./entrypoint.sh /entrypoint.sh # Copy the script and make it executable
+COPY ./entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]

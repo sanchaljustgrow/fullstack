@@ -1,36 +1,36 @@
-# Use multi-stage builds to keep the final image small
+# Use multi-stage builds
 
-# --- Backend Stage (Maven/Spring Boot) ---
+# --- Backend Stage: Build Spring Boot Application ---
 FROM maven:3.9.6-eclipse-temurin-21 AS backend_builder
-WORKDIR /app
-COPY ./backend/package*.json .  # Copy the backend code.  <--- Make sure this path is correct!
+WORKDIR /app/backend  # Create a separate directory for the backend
+COPY ./backend/pom.xml ./  
+COPY ./backend/src ./src
 RUN mvn clean package -DskipTests
 
-# --- Frontend Stage (Node/Angular) ---
+# --- Frontend Stage: Build Angular Application ---
 FROM node:18-alpine AS frontend_builder
-WORKDIR /app
+WORKDIR /app/frontend # Create a separate directory for the frontend
 COPY ./frontend/package*.json ./
 RUN npm install
-COPY ./frontend . # Copy the frontend code
-RUN npm run build --configuration production
+COPY ./frontend .
+RUN npm install -g @angular/cli
+RUN ng build --configuration production
 
-# --- Final Stage (Combining Backend and Frontend) ---
+# --- Final Stage:  Combine Backend and Frontend ---
 FROM openjdk:21-jdk-slim
 WORKDIR /app
 
-# Copy the backend JAR from the backend_builder stage
-COPY --from=backend_builder /app/target/*.jar ./backend.jar
+# Copy the Spring Boot JAR from the backend build stage
+COPY --from=backend_builder /app/backend/target/*.jar ./backend.jar
 
-# Copy the frontend build output from the frontend_builder stage
-COPY --from=frontend_builder /app/dist/frontend /app/frontend
+# Copy the Angular build output from the frontend build stage
+COPY --from=frontend_builder /app/frontend/dist /app/dist
 
-# Expose ports for both applications
+# Expose the necessary ports
 EXPOSE 8080
 EXPOSE 80
 
 # --- Entrypoint Script ---
 # Create a script to start either the backend or the frontend
-# This script will be used as the ENTRYPOINT
-COPY ./entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
+COPY --chmod=755 ./entrypoint.sh /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]

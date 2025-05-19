@@ -22,7 +22,6 @@ RUN npm install -g @angular/cli
 RUN ng build --configuration production
 
 # --- Final Stage: Combine Backend and Frontend ---
-# --- Final Stage: Combine Backend and Frontend ---
 FROM openjdk:21-jdk-slim
 WORKDIR /app
 

@@ -22,14 +22,15 @@ RUN npm install -g @angular/cli
 RUN ng build --configuration production
 
 # --- Final Stage: Combine Backend and Frontend ---
+# --- Final Stage: Combine Backend and Frontend ---
 FROM openjdk:21-jdk-slim
 WORKDIR /app
 
 # Copy the renamed backend JAR
 COPY --from=backend_builder /app/backend/app.jar ./backend.jar
 
-# Copy the Angular production build
-COPY --from=frontend_builder /app/frontend/dist /app/dist
+# ✅ Copy the Angular production build to Spring Boot's static resource folder
+COPY --from=frontend_builder /app/frontend/dist /app/resources/static
 
 # Copy entrypoint script (make sure it's in the project root)
 COPY --chmod=755 ./entrypoint.sh /entrypoint.sh

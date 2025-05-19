@@ -1,11 +1,30 @@
 version: '3.8'
 
 services:
-  fullstack-app:
+  backend:
     build:
       context: .
       dockerfile: Dockerfile
-    image: sanchalkhedkar/fullstack-app:latest
+      target: backend_builder # Build only the backend stage
     ports:
       - "8080:8080"
+    #  Add a volume to persist data, if needed
+    # volumes:
+    #   - backend-data:/app/data
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: frontend_builder # Build only the frontend stage
+    ports:
       - "80:80"
+    #  Add a volume, if needed
+    #  volumes:
+    #    - frontend-data:/usr/share/nginx/html
+    # Ensure the backend service starts before the frontend
+
+#  Define any named volumes, if used
+# volumes:
+#   backend-data:
+#   frontend-data:

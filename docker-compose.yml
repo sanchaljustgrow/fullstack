@@ -5,7 +5,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: your-dockerhub-username/fullstack-app:latest
+    image: sanchalkhedkar/fullstack-app:latest
     ports:
       - "8080:8080"
       - "80:80"

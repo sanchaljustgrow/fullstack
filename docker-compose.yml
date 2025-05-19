@@ -1,20 +1,12 @@
-version: "3.8"
+version: '3.8'
 services:
   backend:
     build:
-      context: .  # Build from the directory containing the docker-compose.yml
-      dockerfile: Dockerfile # Use the Dockerfile
-    image: sanchalkhedkar/combined_app:latest # Tag the image
-    ports:
-      - "8080:8080"
-    environment:
-      - APP_TYPE=backend
+      context: .  # This should be the directory containing the Dockerfile
+      dockerfile: Dockerfile
+    # ...
   frontend:
     build:
       context: .
       dockerfile: Dockerfile
-    image: sanchalkhedkar/combined_app:latest # Tag the image
-    ports:
-      - "4200:80"
-    environment:
-      - APP_TYPE=frontend
+    # ...

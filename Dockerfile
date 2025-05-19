@@ -1,5 +1,3 @@
-# Use multi-stage builds to keep the final image small
-
 # --- Backend Stage (Maven/Spring Boot) ---
 FROM maven:3.9.6-eclipse-temurin-21 AS backend_builder
 WORKDIR /app
@@ -25,8 +23,8 @@ COPY --from=backend_builder /app/target/*.jar ./backend.jar
 COPY --from=frontend_builder /app/dist/frontend /app/frontend
 
 # Expose ports for both applications
-EXPOSE 8080 # Backend
-EXPOSE 80    # Frontend
+EXPOSE 8080
+EXPOSE 80
 
 # --- Entrypoint Script ---
 # Create a script to start either the backend or the frontend

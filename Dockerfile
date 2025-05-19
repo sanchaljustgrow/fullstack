@@ -1,16 +1,20 @@
 # --- Backend Stage: Build Spring Boot Application ---
 FROM maven:3.9.6-eclipse-temurin-21 AS backend_builder
 WORKDIR /app/backend
+
+# Copy Maven project files
 COPY ./backend/pom.xml .
 COPY ./backend/src ./src
 
-# Build the backend JAR
+# Build the backend JAR and rename it to app.jar
 RUN mvn clean package -DskipTests && \
-    ls -alh target  # Debug: Show the built artifacts
+    cp target/*.jar app.jar
 
 # --- Frontend Stage: Build Angular Application ---
 FROM node:18-alpine AS frontend_builder
 WORKDIR /app/frontend
+
+# Install dependencies and build Angular app
 COPY ./frontend/package*.json ./
 RUN npm install
 COPY ./frontend .
@@ -21,19 +25,18 @@ RUN ng build --configuration production
 FROM openjdk:21-jdk-slim
 WORKDIR /app
 
-# Copy the built Spring Boot JAR from backend_builder
-# Replace 'your-app-name.jar' with actual JAR name (from backend build output)
-COPY --from=backend_builder /app/backend/target/your-app-name.jar ./backend.jar
+# Copy the renamed backend JAR
+COPY --from=backend_builder /app/backend/app.jar ./backend.jar
 
-# Copy Angular build output
+# Copy the Angular production build
 COPY --from=frontend_builder /app/frontend/dist /app/dist
 
-# Copy entrypoint script
+# Copy entrypoint script (make sure it's in the project root)
 COPY --chmod=755 ./entrypoint.sh /entrypoint.sh
 
 # Expose backend and frontend ports
 EXPOSE 8080
 EXPOSE 80
 
+# Start the application
 ENTRYPOINT ["/entrypoint.sh"]
-

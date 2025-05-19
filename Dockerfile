@@ -3,7 +3,7 @@
 # --- Backend Stage (Maven/Spring Boot) ---
 FROM maven:3.9.6-eclipse-temurin-21 AS backend_builder
 WORKDIR /app
-COPY ./backend .  # Copy the backend code.  <--- Make sure this path is correct!
+COPY ./backend/package*.json .  # Copy the backend code.  <--- Make sure this path is correct!
 RUN mvn clean package -DskipTests
 
 # --- Frontend Stage (Node/Angular) ---

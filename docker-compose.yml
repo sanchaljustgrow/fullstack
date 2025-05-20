@@ -1,30 +1,29 @@
-version: '3.8'
+version: "3.8"
 
 services:
   backend:
     build:
-      context: ./backend
-      dockerfile: Dockerfile
-      target: backend_builder # Build only the backend stage
+      context: ./backend  # Path to the backend folder
+      dockerfile: Dockerfile  # Use the backend Dockerfile
+    image: sanchalkhedkar/combined_app_backend:latest  # Tag the backend image
     ports:
-      - "8080:8080"
-    #  Add a volume to persist data, if needed
-    # volumes:
-    #   - backend-data:/app/data
+      - "8080:8080"  # Expose backend on port 8080
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod  # Optional: Set Spring profile
+    networks:
+      - app-network  # Custom network for communication between services
 
   frontend:
     build:
-      context: ./frontend
-      dockerfile: Dockerfile
-      target: frontend_builder # Build only the frontend stage
+      context: ./frontend  # Path to the frontend folder
+      dockerfile: Dockerfile  # Use the frontend Dockerfile
+    image: sanchalkhedkar/combined_app_frontend:latest  # Tag the frontend image
     ports:
-      - "80:80"
-    #  Add a volume, if needed
-    #  volumes:
-    #    - frontend-data:/usr/share/nginx/html
-    # Ensure the backend service starts before the frontend
+      - "80:80"  # Expose frontend on port 80 (served by Nginx)
+    networks:
+      - app-network  # Custom network for communication with backend (optional)
 
-#  Define any named volumes, if used
-# volumes:
-#   backend-data:
-#   frontend-data:
+# Define a custom network to allow frontend and backend to communicate
+networks:
+  app-network:
+    driver: bridge

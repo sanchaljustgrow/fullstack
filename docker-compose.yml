@@ -1,16 +1,21 @@
-version: "3.8"
+version: '3.8'
 
 services:
-  fullstack-app:
+  backend:
     build:
-      context: .  # Path where Dockerfile is located
-    image: sanchalkhedkar/fullstack-app:latest
+      context: ./backend
+      dockerfile: Dockerfile
+      target: backend_builder # Build only the backend stage
     ports:
-      - "8080:8080"  # Spring Boot (backend)
-      - "8081:80"    # Nginx (frontend)
-    networks:
-      - app-network
+      - "8080:8080"
+    #  Add a volume to persist data, if needed
+    # volumes:
+    #   - backend-data:/app/data
 
-networks:
-  app-network:
-    driver: bridge
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      target: frontend_builder # Build only the frontend stage
+    ports:
+      - "80:80"

@@ -23,13 +23,19 @@ RUN ng build --configuration production
 
 # --- Final Stage: Combine Backend and Frontend ---
 FROM openjdk:21-jdk-slim
+
+# Install Nginx
+RUN apt-get update && \
+    apt-get install -y nginx && \
+    rm -rf /var/lib/apt/lists/*
+
 WORKDIR /app
 
 # Copy the renamed backend JAR
 COPY --from=backend_builder /app/backend/app.jar ./backend.jar
 
-# ✅ Copy the Angular production build to Spring Boot's static resource folder
-COPY --from=frontend_builder /app/frontend/dist /app/resources/static
+#  Copy the Angular production build to Spring Boot's static resource folder
+COPY --from=frontend_builder /app/frontend/dist /usr/share/nginx/html
 
 # Expose backend port (Spring Boot app)
 EXPOSE 8080
@@ -40,5 +46,5 @@ EXPOSE 8081
 # Copy entrypoint script (make sure it's in the project root)
 COPY --chmod=755 ./entrypoint.sh /entrypoint.sh
 
-# Start the application
+# Start the application with Nginx and Spring Boot
 ENTRYPOINT ["/entrypoint.sh"]

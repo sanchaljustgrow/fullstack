@@ -1,49 +1,44 @@
-# --- Stage 1: Build Angular App ---
-FROM node:18-alpine AS builder
-
-WORKDIR /app
-
-# Copy frontend package files
-COPY frontend/package*.json ./frontend/
-RUN npm install --prefix ./frontend
-
-# Copy the rest of the frontend files and build the Angular app
-COPY frontend/ ./frontend/
-RUN npm install -g @angular/cli && \
-    ng build --configuration production --prefix ./frontend
-
-# --- Stage 2: Build Spring Boot App ---
+# --- Backend Stage: Build Spring Boot Application ---
 FROM maven:3.9.6-eclipse-temurin-21 AS backend_builder
+WORKDIR /app/backend
 
+# Copy Maven project files
+COPY ./backend/pom.xml . 
+COPY ./backend/src ./src
+
+# Build the backend JAR and rename it to app.jar
+RUN mvn clean package -DskipTests && \
+    cp target/*.jar app.jar
+
+# --- Frontend Stage: Build Angular Application ---
+FROM node:18-alpine AS frontend_builder
+WORKDIR /app/frontend
+
+# Install dependencies and build Angular app
+COPY ./frontend/package*.json ./
+RUN npm install
+COPY ./frontend ./
+RUN npm install -g @angular/cli
+RUN ng build --configuration production
+
+# --- Final Stage: Combine Backend and Frontend ---
+FROM openjdk:21-jdk-slim
 WORKDIR /app
 
-# Copy backend Maven files
-COPY backend/pom.xml ./backend/
-COPY backend/src ./backend/src
+# Copy the renamed backend JAR
+COPY --from=backend_builder /app/backend/app.jar ./backend.jar
 
-# Build the Spring Boot JAR
-RUN mvn clean package -DskipTests --file backend/pom.xml
+# ✅ Copy the Angular production build to Spring Boot's static resource folder
+COPY --from=frontend_builder /app/frontend/dist /app/resources/static
 
-# --- Stage 3: Serve Both Frontend and Backend ---
-FROM openjdk:21-jdk-slim AS final
+# Expose backend port (Spring Boot app)
+EXPOSE 8080
 
-WORKDIR /app
+# Expose frontend port (Nginx serving the Angular app)
+EXPOSE 8081
 
-# Copy the built Spring Boot JAR
-COPY --from=backend_builder /app/backend/target/*.jar ./backend.jar
+# Copy entrypoint script (make sure it's in the project root)
+COPY --chmod=755 ./entrypoint.sh /entrypoint.sh
 
-# Copy the built Angular app to Nginx static folder
-COPY --from=builder /app/frontend/dist /usr/share/nginx/html
-
-# Expose ports for both frontend (8081) and backend (8080)
-EXPOSE 8080  # Backend port
-EXPOSE 8081  # Frontend port (Nginx)
-
-# Install Nginx to serve the frontend and run both backend and frontend
-RUN apt-get update && apt-get install -y nginx
-
-# Copy entrypoint script to start both services
-COPY entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
-
+# Start the application
 ENTRYPOINT ["/entrypoint.sh"]

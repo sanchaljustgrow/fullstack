@@ -1,18 +1,16 @@
 version: "3.8"
 
 services:
-  # Fullstack app combining frontend (Angular with Nginx) and backend (Spring Boot)
   fullstack-app:
     build:
-      context: .  # Build from the directory containing the Dockerfile
-    image: sanchalkhedkar/fullstack-app:latest  # Tag the combined image
+      context: .  # Path where Dockerfile is located
+    image: sanchalkhedkar/fullstack-app:latest
     ports:
-      - "8080:8080"  # Expose backend port for Spring Boot
-      - "8081:80"    # Expose frontend port (Nginx serves the Angular app)
-   # networks:
-      #- app-network  # Custom network for communication between frontend and backend
+      - "8080:8080"  # Spring Boot (backend)
+      - "8081:80"    # Nginx (frontend)
+    networks:
+      - app-network
 
-# Define a custom network (useful if needed for internal communication)
-#networks:
- # app-network:
-  #  driver: bridge
+networks:
+  app-network:
+    driver: bridge

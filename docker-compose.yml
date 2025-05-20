@@ -9,8 +9,7 @@ services:
     image: sanchalkhedkar/frontend:latest  # Image name for frontend
     ports:
       - "8081:80"  # Expose port 80 of the frontend (Nginx) to port 8081 on the host machine
-    networks:
-      - fullstack-network
+ 
 
   # Backend service (Spring Boot)
   backend:

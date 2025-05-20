@@ -1,21 +1,22 @@
-version: '3.8'
+version: "3.8"
 
 services:
-  backend:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
-      target: backend_builder # Build only the backend stage
-    ports:
-      - "8080:8080"
-    #  Add a volume to persist data, if needed
-    # volumes:
-    #   - backend-data:/app/data
-
+  # Frontend service (Angular + Nginx)
   frontend:
     build:
-      context: ./frontend
-      dockerfile: Dockerfile
-      target: frontend_builder # Build only the frontend stage
+      context: ./frontend  # Path to the frontend Dockerfile
+      dockerfile: Dockerfile  # Explicitly point to the Dockerfile if needed
+    image: sanchalkhedkar/frontend:latest  # Image name for frontend
     ports:
-      - "80:80"
+      - "8081:80"  # Expose port 80 of the frontend (Nginx) to port 8081 on the host machine
+    networks:
+      - fullstack-network
+
+  # Backend service (Spring Boot)
+  backend:
+    build:
+      context: ./backend  # Path to the backend Dockerfile
+      dockerfile: Dockerfile  # Explicitly point to the Dockerfile if needed
+    image: sanchalkhedkar/backend:latest  # Image name for backend
+    ports:
+      - "8080:8080" 

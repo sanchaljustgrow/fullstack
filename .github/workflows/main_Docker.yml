@@ -31,6 +31,3 @@ jobs:
       
       - name : push image on DockerHub
         run: docker-compose -f docker-compose.yml push
-             
-
-     

@@ -3,7 +3,7 @@ version: '3.8'
 services:
   backend:
     build:
-      context: .
+      context: ./backend
       dockerfile: Dockerfile
       target: backend_builder # Build only the backend stage
     ports:
@@ -14,7 +14,7 @@ services:
 
   frontend:
     build:
-      context: .
+      context: ./frontend
       dockerfile: Dockerfile
       target: frontend_builder # Build only the frontend stage
     ports:

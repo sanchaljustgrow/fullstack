@@ -48,7 +48,7 @@ COPY nginx.conf /etc/nginx/conf.d/default.conf
 COPY --from=frontend_builder /app/dist/angular13-fundamentals-workshop /usr/share/nginx/html
 
 # Expose the necessary ports
-EXPOSE 8080  # Spring Boot
+EXPOSE 8083 # Spring Boot
 EXPOSE 8081  # Nginx
 
 # Use entrypoint script to start both services

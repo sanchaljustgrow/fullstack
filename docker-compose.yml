@@ -9,8 +9,8 @@ services:
     ports:
       - "8080:8080"  # Expose backend port for Spring Boot
       - "8081:80"    # Expose frontend port (Nginx serves the Angular app)
-    networks:
-      - app-network  # Custom network for communication between frontend and backend
+   # networks:
+      #- app-network  # Custom network for communication between frontend and backend
 
 # Define a custom network (useful if needed for internal communication)
 #networks:
